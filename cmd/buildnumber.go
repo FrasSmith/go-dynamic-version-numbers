@@ -8,21 +8,27 @@ import (
 	"time"
 )
 
-// Read the existing version.txt file from the project root
-// Update build time and increment build number before
-// writing back to version.txt for embedding in the
-// main binary file
-//
 func main() {
+	// Load the file content
 	vFileData, _ := os.ReadFile("version.txt")
 
+	// Convert from Byte array to string and split
+	// on newlines. We now have a slice of strings
 	vLines := strings.Split(string(vFileData), "\n")
-	vno := vLines[0]
+
+	// Generate a timestamp.
 	bTime := time.Now().Format("20060102-1504")
+
+	// Load the count from the 3rd line of the file
+	// It's a string so we need to convert to integer
+	// Then increment it by 1
 	bNum, _ := strconv.Atoi(vLines[2])
 	bNum++
 
-	outStr := vno + "\n" + bTime + "\n" + fmt.Sprint(bNum)
+	// Generate a single string to write back to the file
+	// Note, we didn't change the version string
+	outStr := vLines[0] + "\n" + bTime + "\n" + fmt.Sprint(bNum)
 
+	// Write the data back to the file.
 	_ = os.WriteFile("version.txt", []byte(outStr), 0777)
 }
